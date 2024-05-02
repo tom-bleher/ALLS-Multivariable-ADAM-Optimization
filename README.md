@@ -232,22 +232,30 @@ def process_images(self):
 As described in the recent momentum gradient descent document, I will be testing the Adam algorithm in the same environment as previously. 
 
 $$C(f,\phi_{2})=(0.1(f+\phi_{2}))^{2}\cdot \sin(0.01(f+\phi_{2}))$$
-![[Pasted image 20240124012635.png|center|400]]
-
+<br>
+<div align="center">
+<img src="Media/Pasted image 20240124012635.png" width="50%" height="50%" />
+</div>
 I will be initiating the algorithm in current spot marked by the red spot, and run the algorithm. 
-
-![[Pasted image 20240128095804.png|center|400]]
+<br>
+<div align="center">
+<img src="Media/Pasted image 20240128095804.png" width="50%" height="50%" />
+</div>
 
 The algorithm is successfully able to arrive at the absolute minimum point. 
 
-
 ###### ADAM vs Momentum Gradient Descent 
 The plots for Adam are as following:
-![[love.svg|center|500]]
-
+<br>
+<div align="center">
+<img src="Media/love.svg" width="50%" height="50%" />
+</div>
 We can see in the `count vs iteration` plot that although we observe oscillation it flattens out until the algorithm fixes on a constant value.
 
 While the plots for momentum gradient descent are as following:
-![[jo.svg|center|500]]
+<br>
+<div align="center">
+<img src="Media/jo.svg" width="50%" height="50%" />
+</div>
 
 Additionally, while tuning the parameters I noticed that Adam tends to avoid getting stuck in the saddle point unlike momentum gradient descent which gets stuck on it despite a previous lower count solution.
