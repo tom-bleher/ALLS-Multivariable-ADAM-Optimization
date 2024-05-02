@@ -108,7 +108,10 @@ self.biased_squared_momentum_history = np.append(self.biased_squared_momentum_hi
 
  *It's worth noting that the expression's $t$ — the iteration number — is expressed as `n_images_run_count` in the code for more stable optimization.
 
-$$\theta _{t+1}=\theta_{t}-\frac{\alpha\cdot \hat{m}_{t}}{\sqrt{ \hat{ v_{t}}}+\epsilon}$$
+```math
+\theta _{t+1}=\theta_{t}-\frac{\alpha\cdot \hat{m}_{t}}{\sqrt{ \hat{ v_{t}}}+\epsilon}
+```
+
 ```python
 # for every parameter we update the new value based on the latest lists values
 self.new_focus = self.focus_history[-1] - ((self.focus_learning_rate_history[-1]*self.biased_momentum_estimate_history[-1])/(np.sqrt(self.biased_squared_momentum_history[-1])+self.epsilon))
@@ -248,5 +251,3 @@ While the plots for momentum gradient descent are as following:
 ![[jo.svg|center|500]]
 
 Additionally, while tuning the parameters I noticed that Adam tends to avoid getting stuck in the saddle point unlike momentum gradient descent which gets stuck on it despite a previous lower count solution.
-
-**The main algorithm and testing code can be found [here](https://drive.google.com/drive/folders/1t0Z8dlRwMKmeNBGuGpUEWqZABK1TZ0w1?usp=sharing)**
