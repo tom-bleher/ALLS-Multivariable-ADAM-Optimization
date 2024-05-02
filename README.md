@@ -27,8 +27,8 @@ The Adaptive Moment Estimation algorithm combines RMSprop and momentum gradient 
 
 ```math
 \begin{align*}
-m_{t}=\beta_{1}m_{t-1}+(1-\beta_{1})(\nabla f(\theta_{t}))\;\;, \; \; \; \hat{m}_{t}=\frac{m_{t}}{1-{(\beta_{1}})^{t}} \\
-v_{t}=\beta_{2}v_{t-1}+(1-\beta_{2})(\nabla f(\theta_{t}))^2\;\;,\;\; \hat{v}_{t}=\frac{v_{t}}{1-{(\beta_{2}})^{t}} \\
+m_{t}=\beta_{1}m_{t-1}+(1-\beta_{1})(\nabla f(\theta_{t}))\;, \; \; \; \hat{m}_{t}=\frac{m_{t}}{1-{(\beta_{1}})^{t}} \\
+v_{t}=\beta_{2}v_{t-1}+(1-\beta_{2})(\nabla f(\theta_{t}))^2\;,\;\; \hat{v}_{t}=\frac{v_{t}}{1-{(\beta_{2}})^{t}} \\
 \theta _{t+1}=\theta_{t}-\frac{\alpha\cdot \hat{m}_{t}}{\sqrt{ \hat{ v_{t}}}+\epsilon}
 \end{align*}
 ```
