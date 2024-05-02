@@ -26,11 +26,11 @@ Here, $v_{t}$ describes the running mean of squared gradients at a certain itera
 The Adaptive Moment Estimation algorithm combines RMSprop and momentum gradient descent to form a robust optimization solution which is capable of tackling a broader range of non-convex functions.
 
 ```math
-\begin{align*}
-m_{t}=\beta_{1}m_{t-1}+(1-\beta_{1})(\nabla f(\theta_{t}))\;, \; \; \; \hat{m}_{t}=\frac{m_{t}}{1-{(\beta_{1}})^{t}} \\
-v_{t}=\beta_{2}v_{t-1}+(1-\beta_{2})(\nabla f(\theta_{t}))^2\;,\;\; \hat{v}_{t}=\frac{v_{t}}{1-{(\beta_{2}})^{t}} \\
+\begin{gather*}
+m_{t}=\beta_{1}m_{t-1}+(1-\beta_{1})(\nabla f(\theta_{t})), \; \; \; \hat{m}_{t}=\frac{m_{t}}{1-{(\beta_{1}})^{t}} \\
+v_{t}=\beta_{2}v_{t-1}+(1-\beta_{2})(\nabla f(\theta_{t}))^2,\;\; \hat{v}_{t}=\frac{v_{t}}{1-{(\beta_{2}})^{t}} \\
 \theta _{t+1}=\theta_{t}-\frac{\alpha\cdot \hat{m}_{t}}{\sqrt{ \hat{ v_{t}}}+\epsilon}
-\end{align*}
+\end{gather*}
 ```
 Here, $v_{t}$ is the running mean of squared gradients as presented in RMSprop, and $m_{t}$ is the momentum estimate as presented in momentum gradient descent algorithm. $\hat{m_{t}}$, and $\hat{v_{t}}$ are the biased momentum and squared gradients respectively. They correctly help adjust the parameters by scaling them based on the number of iterations.
 
