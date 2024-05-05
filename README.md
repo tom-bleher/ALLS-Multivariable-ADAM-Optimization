@@ -96,8 +96,10 @@ self.new_biased_momentum = ((self.momentum_estimate_history[-1])/(1-((self.momen
 # appending the new biased momentum to its dedicated list
 self.biased_momentum_estimate_history = np.append(self.biased_momentum_estimate_history, self.new_biased_momentum)
 ```
+```math
+\hat{v}_{t}=\frac{v_{t}}{1-{(\beta_{2}})^{t}}
+```
 
-$$\hat{v}_{t}=\frac{v_{t}}{1-{(\beta_{2}})^{t}}$$
 ```python
 # updating the new squared gradient
 self.new_biased_squared_momentum = ((self.squared_momentum_estimate_history[-1])/(1-((self.momentum_decay_two)**self.n_images_run_count)))
