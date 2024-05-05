@@ -70,7 +70,10 @@ self.biased_squared_gradient_history = np.array([])
 
 I will now translate the mathematical expressions as introduced previously to python code:
 
-$$m_{t}=\beta_{1}m_{t-1}+(1-\beta_{1})(\nabla f(\theta_{t}))$$
+```math
+m_{t}=\beta_{1}m_{t-1}+(1-\beta_{1})(\nabla f(\theta_{t}))
+```
+
 ```python
 # updating the new momentum estimate
 self.new_momentum_estimate = (self.momentum_decay_one*self.momentum_estimate_history[-1]) + ((1-self.momentum_decay_one)*(self.focus_der_history[-1]))
@@ -78,8 +81,9 @@ self.new_momentum_estimate = (self.momentum_decay_one*self.momentum_estimate_his
 # appending the new estimate to its dedicated list
 self.momentum_estimate_history = np.append(self.momentum_estimate_history, self.new_momentum_estimate)
 ```
-
-$$v_{t}=\beta_{2}v_{t-1}+(1-\beta_{2})(\nabla f(\theta_{t}))^2$$
+```math
+v_{t}=\beta_{2}v_{t-1}+(1-\beta_{2})(\nabla f(\theta_{t}))^{2}
+```
 ```python
 # updating the new squared gradient 
 self.new_squared_gradient_estimate = (self.momentum_decay_two*self.squared_gradient_history[-1]) + ((1-self.momentum_decay_two)*((self.focus_der_history[-1])**2))
@@ -87,8 +91,9 @@ self.new_squared_gradient_estimate = (self.momentum_decay_two*self.squared_gradi
 # appending the new squared gradient to its dedicated list
 self.squared_gradient_history = np.append(self.squared_gradient_history, self.new_squared_gradient_estimate)
 ```
-
-$$\hat{m}_{t}=\frac{m_{t}}{1-{(\beta_{1}})^{t}}$$
+```math
+\hat{m}_{t}=\frac{m_{t}}{1-{(\beta_{1}})^{t}}
+```
 ```python
 # updating the new biased momentum estimate
 self.new_biased_momentum = ((self.momentum_estimate_history[-1])/(1-((self.momentum_decay_one)**self.n_images_run_count)))
@@ -96,8 +101,10 @@ self.new_biased_momentum = ((self.momentum_estimate_history[-1])/(1-((self.momen
 # appending the new biased momentum to its dedicated list
 self.biased_momentum_estimate_history = np.append(self.biased_momentum_estimate_history, self.new_biased_momentum)
 ```
+```math
+\hat{v}_{t}=\frac{v_{t}}{1-{(\beta_{2}})^{t}}
+```
 
-$$\hat{v}_{t}=\frac{v_{t}}{1-{(\beta_{2}})^{t}}$$
 ```python
 # updating the new squared gradient
 self.new_biased_squared_momentum = ((self.squared_momentum_estimate_history[-1])/(1-((self.momentum_decay_two)**self.n_images_run_count)))
@@ -232,22 +239,30 @@ def process_images(self):
 As described in the recent momentum gradient descent document, I will be testing the Adam algorithm in the same environment as previously. 
 
 $$C(f,\phi_{2})=(0.1(f+\phi_{2}))^{2}\cdot \sin(0.01(f+\phi_{2}))$$
-![[Pasted image 20240124012635.png|center|400]]
-
+<br>
+<div align="center">
+<img src="Media/Pasted image 20240124012635.png" width="50%" height="50%" />
+</div>
 I will be initiating the algorithm in current spot marked by the red spot, and run the algorithm. 
-
-![[Pasted image 20240128095804.png|center|400]]
+<br>
+<div align="center">
+<img src="Media/Pasted image 20240128095804.png" width="50%" height="50%" />
+</div>
 
 The algorithm is successfully able to arrive at the absolute minimum point. 
 
-
 ###### ADAM vs Momentum Gradient Descent 
 The plots for Adam are as following:
-![[love.svg|center|500]]
-
+<br>
+<div align="center">
+<img src="Media/love.svg" width="50%" height="50%" />
+</div>
 We can see in the `count vs iteration` plot that although we observe oscillation it flattens out until the algorithm fixes on a constant value.
 
 While the plots for momentum gradient descent are as following:
-![[jo.svg|center|500]]
+<br>
+<div align="center">
+<img src="Media/jo.svg" width="50%" height="50%" />
+</div>
 
 Additionally, while tuning the parameters I noticed that Adam tends to avoid getting stuck in the saddle point unlike momentum gradient descent which gets stuck on it despite a previous lower count solution.
