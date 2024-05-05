@@ -70,7 +70,10 @@ self.biased_squared_gradient_history = np.array([])
 
 I will now translate the mathematical expressions as introduced previously to python code:
 
-$$m_{t}=\beta_{1}m_{t-1}+(1-\beta_{1})(\nabla f(\theta_{t}))$$
+```math
+m_{t}=\beta_{1}m_{t-1}+(1-\beta_{1})(\nabla f(\theta_{t}))
+```
+
 ```python
 # updating the new momentum estimate
 self.new_momentum_estimate = (self.momentum_decay_one*self.momentum_estimate_history[-1]) + ((1-self.momentum_decay_one)*(self.focus_der_history[-1]))
@@ -78,8 +81,9 @@ self.new_momentum_estimate = (self.momentum_decay_one*self.momentum_estimate_his
 # appending the new estimate to its dedicated list
 self.momentum_estimate_history = np.append(self.momentum_estimate_history, self.new_momentum_estimate)
 ```
-
-$$v_{t}=\beta_{2}v_{t-1}+(1-\beta_{2})(\nabla f(\theta_{t}))^2$$
+```math
+v_{t}=\beta_{2}v_{t-1}+(1-\beta_{2})(\nabla f(\theta_{t}))^{2}
+```
 ```python
 # updating the new squared gradient 
 self.new_squared_gradient_estimate = (self.momentum_decay_two*self.squared_gradient_history[-1]) + ((1-self.momentum_decay_two)*((self.focus_der_history[-1])**2))
@@ -87,8 +91,9 @@ self.new_squared_gradient_estimate = (self.momentum_decay_two*self.squared_gradi
 # appending the new squared gradient to its dedicated list
 self.squared_gradient_history = np.append(self.squared_gradient_history, self.new_squared_gradient_estimate)
 ```
-
-$$\hat{m}_{t}=\frac{m_{t}}{1-{(\beta_{1}})^{t}}$$
+```math
+\hat{m}_{t}=\frac{m_{t}}{1-{(\beta_{1}})^{t}}
+```
 ```python
 # updating the new biased momentum estimate
 self.new_biased_momentum = ((self.momentum_estimate_history[-1])/(1-((self.momentum_decay_one)**self.n_images_run_count)))
