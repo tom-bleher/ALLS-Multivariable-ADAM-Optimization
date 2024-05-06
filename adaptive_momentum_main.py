@@ -86,9 +86,8 @@ class BetatronApplication(QtWidgets.QApplication):
         
         self.count_plot_widget = pg.PlotWidget()
         self.count_plot_widget.setWindowTitle('count optimization')
-        self.count_plot_widget.setLabel('left', 'count')
-        self.count_plot_widget.setLabel('bottom', 'image_group iteration')
-        self.count_plot_widget.showGrid(x=True, y=True)
+        self.count_plot_widget.setLabel('left', 'Count')
+        self.count_plot_widget.setLabel('bottom', 'Image group iteration')
         self.count_plot_widget.show()
 
         self.main_plot_window = pg.GraphicsLayoutWidget()
@@ -96,26 +95,21 @@ class BetatronApplication(QtWidgets.QApplication):
 
         layout = self.main_plot_window.addLayout(row=0, col=0)
 
-        self.count_plot_widget = layout.addPlot(title='count vs image_group iteration')
-        self.focus_plot = layout.addPlot(title='count_focus_derivative')
-        self.second_dispersion_plot = layout.addPlot(title='count_second_dispersion_derivative')
-        self.third_dispersion_plot = layout.addPlot(title='count_third_dispersion_derivative')
-        self.total_gradient_plot = layout.addPlot(title='total_gradient')
-
-        subplots = [self.count_plot_widget, self.focus_plot, self.second_dispersion_plot, self.third_dispersion_plot, self.total_gradient_plot]
-        for subplot in subplots:
-            subplot.showGrid(x=True, y=True)
+        self.count_plot_widget = layout.addPlot(title='Count vs image group iteration')
+        self.total_gradient_plot = layout.addPlot(title='Total gradient vs image group iteration')
 
         self.plot_curve = self.count_plot_widget.plot(pen='r')
-        self.focus_curve = self.focus_plot.plot(pen='r', name='focus derivative')
-        self.second_dispersion_curve = self.second_dispersion_plot.plot(pen='g', name='second dispersion derivative')
-        self.third_dispersion_curve = self.third_dispersion_plot.plot(pen='b', name='third dispersion derivative')
-        self.total_gradient_curve = self.total_gradient_plot.plot(pen='y', name='total gradient')
+        self.total_gradient_curve = self.total_gradient_plot.plot(pen='y', name='total gradient')\
+        
+        # y labels of plots
+        self.total_gradient_plot.setLabel('left', 'Total Gradient')
+        self.count_plot_widget.setLabel('left', 'Image Group Iteration')
+
+        # x label of both plots
+        self.count_plot_widget.setLabel('bottom', 'Image Group Iteration')
+        self.total_gradient_plot.setLabel('bottom', 'Image Group Iteration')
 
         self.plot_curve.setData(self.iteration_data, self.count_history)
-        self.focus_curve.setData(self.der_iteration_data, self.focus_der_history)
-        self.second_dispersion_curve.setData(self.der_iteration_data, self.second_dispersion_der_history)
-        self.third_dispersion_curve.setData(self.der_iteration_data, self.third_dispersion_der_history)
         self.total_gradient_curve.setData(self.der_iteration_data, self.total_gradient_history)
 
     # ------------ Deformable mirror ------------ #
@@ -223,12 +217,19 @@ class BetatronApplication(QtWidgets.QApplication):
         except Exception as e:
             print(f"Error in FTP upload: {e}")
 
-    def calc_xray_count(self, image_path):
+    def calc_count_per_image(self, image_path):
+    
+        # read the image in 16 bit
         original_image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED | cv2.IMREAD_ANYDEPTH)
-        median_filtered_image = cv2.medianBlur(original_image, 5)
-        self.img_mean_count = median_filtered_image.mean()
-
-        return self.img_mean_count
+        
+        # apply median blur on image
+        median_blured_image = cv2.medianBlur(original_image, 5)
+        
+        # calculate mean brightness of blured image
+        self.single_img_mean_count = median_blured_image.mean()
+        
+        # return the count (brightness of image)
+        return self.single_img_mean_count
 
     def initial_optimize(self):
 
@@ -280,9 +281,6 @@ class BetatronApplication(QtWidgets.QApplication):
 
     def plot_reset(self):
         self.plot_curve.setData(self.iteration_data, self.count_history)
-        self.focus_curve.setData(self.der_iteration_data, self.focus_der_history)
-        self.second_dispersion_curve.setData(self.der_iteration_data, self.second_dispersion_der_history)
-        self.third_dispersion_curve.setData(self.der_iteration_data, self.third_dispersion_der_history)
         self.total_gradient_curve.setData(self.der_iteration_data, self.total_gradient_history)
 
         self.image_group_count_sum = 0
@@ -398,7 +396,7 @@ class BetatronApplication(QtWidgets.QApplication):
 
         for image_path in new_images:
 
-            self.img_mean_count = self.calc_xray_count(image_path)
+            self.img_mean_count = self.calc_count_per_image(image_path)
             self.image_group_count_sum += np.sum(self.img_mean_count)
 
             self.images_processed += 1
