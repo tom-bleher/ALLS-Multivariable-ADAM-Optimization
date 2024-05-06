@@ -9,21 +9,21 @@ Generally speaking, the implementation of Adaptive Moment Estimation offers:
 #### Theoretical background
 Let me explain the mathematical description of Adaptive Moment Estimation (ADAM) by first separately tackling Momentum Gradient Descent and RMSprop.
 ###### Momentum Gradient Descent
-The momentum gradient descent algorithm builds upon the the vanilla gradient descent algorithm — $\theta_{t+1}=\theta_{t}-\gamma \nabla f(\theta_{n})$ — by adding a momentum term to the expression. This term builds up momentum in the direction of the previous gradients, smoothing out the updates and assisting to faster convergence.
+The momentum gradient descent algorithm builds upon the vanilla gradient descent algorithm — $\theta_{t+1}=\theta_{t}-\gamma \nabla f(\theta_{n})$ — by adding a momentum term to the expression. This term builds up momentum in the direction of the previous gradients, smoothing out the updates and assisting in faster convergence.
 
 $$\theta_{t+1}=\theta_{t}+\beta(\theta_{t}-\theta_{t-1})-\gamma \nabla f(\theta_{n})$$
 
 Here, $\gamma$ is the learning rate, and $\beta$ is the momentum decay factor.
 
 ###### Root Mean Square Propagation (RMSprop)
-RMSprop adjusts the learning rates of individual parameters in real-time according to the gradient history. It addresses problems faced by momentum gradient descent including slow convergence and parameter oscillation. The algorithm accomplishes this by keeping track of a moving average of the squared gradients which scale the learning rates.
+RMSprop adjusts the learning rates of individual parameters in real time according to the gradient history. It addresses problems faced by momentum gradient descent including slow convergence and parameter oscillation. The algorithm accomplishes this by keeping track of a moving average of the squared gradients which scale the learning rates.
 
 $$\theta_{t+1}=\theta_{t}-\frac{\gamma \cdot \nabla f(\theta_{t})}{\sqrt{ v_{t} + \epsilon }}$$
 $$v_{t}=\beta  \cdot v_{t-1}+(1-\beta)\cdot(\nabla g(\theta_{t}))^2$$
 
 Here, $v_{t}$ describes the running mean of squared gradients at a certain iteration $t$, and $\beta$ is the momentum decay factor as presented in the momentum gradient descent algorithm.
 ###### Adaptive Moment Estimation (ADAM)
-The Adaptive Moment Estimation algorithm combines RMSprop and momentum gradient descent to form a robust optimization solution which is capable of tackling a broader range of non-convex functions.
+The Adaptive Moment Estimation algorithm combines RMSprop and momentum gradient descent to form a robust optimization solution that is capable of tackling a broader range of non-convex functions.
 
 ```math
 \begin{gather*}
@@ -32,12 +32,12 @@ v_{t}=\beta_{2}v_{t-1}+(1-\beta_{2})(\nabla f(\theta_{t}))^2,\;\; \hat{v}_{t}=\f
 \theta _{t+1}=\theta_{t}-\frac{\alpha\cdot \hat{m}_{t}}{\sqrt{ \hat{ v_{t}}}+\epsilon}
 \end{gather*}
 ```
-Here, $v_{t}$ is the running mean of squared gradients as presented in RMSprop, and $m_{t}$ is the momentum estimate as presented in momentum gradient descent algorithm. $\hat{m_{t}}$, and $\hat{v_{t}}$ are the biased momentum and squared gradients respectively. They correctly help adjust the parameters by scaling them based on the number of iterations.
+Here, $v_{t}$ is the running mean of squared gradients as presented in RMSprop, and $m_{t}$ is the momentum estimate as presented in the momentum gradient descent algorithm. $\hat{m_{t}}$, and $\hat{v_{t}}$ are the biased momentum and squared gradients respectively. They correctly help adjust the parameters by scaling them based on the number of iterations.
 
 #### Implementation of ADAM in Python
 To implement Adaptive Moment Estimation in our Betatron X-ray count optimization system, I made the following additions to the previous momentum gradient descent code:
 
-Since the learning rates are dynamic, my program now includes the initial learning rate values and the new `epsilon` constant which ensures the algorithm does not divides by zero:
+Since the learning rates are dynamic, my program now includes the initial learning rate values and the new `epsilon` constant which ensures the algorithm does not divide by zero:
 
 ```python
 self.epsilon = 1e-8
@@ -68,7 +68,7 @@ self.biased_squared_gradient_history = np.array([])
 ```
 
 
-I will now translate the mathematical expressions as introduced previously to python code:
+I will now translate the mathematical expressions to Python:
 
 ```math
 m_{t}=\beta_{1}m_{t-1}+(1-\beta_{1})(\nabla f(\theta_{t}))
@@ -120,7 +120,7 @@ self.biased_squared_momentum_history = np.append(self.biased_squared_momentum_hi
 ```
 
 ```python
-# for every parameter we update the new value based on the latest lists values
+# for every parameter we update the new value based on the latest list values
 self.new_focus = self.focus_history[-1] - ((self.focus_learning_rate_history[-1]*self.biased_momentum_estimate_history[-1])/(np.sqrt(self.biased_squared_momentum_history[-1])+self.epsilon))
 ```
 
@@ -157,8 +157,8 @@ Expanding the focus update logic as presented above to the rest of the parameter
 ```python
 def optimize_count(self):
 	derivatives = self.calc_derivatives()
-	self.calc_estimated_momentum() # calc estimated biased and unbaised momentum estimates
-	self.calc_squared_grad() # calc estimated biased and unbaised squared gradient estimates
+	self.calc_estimated_momentum() # calc estimated biased and unbiased momentum estimates
+	self.calc_squared_grad() # calc estimated biased and unbiased squared gradient estimates
 	if np.abs(self.focus_learning_rate_history[-1] * derivatives["focus"]) > 1:
 		self.new_focus = self.focus_history[-1] - ((self.focus_learning_rate_history[-1]*self.biased_momentum_estimate_history[-1])/(np.sqrt(self.biased_squared_momentum_history[-1])+self.epsilon))
 		self.new_focus = np.clip(self.new_focus, self.FOCUS_LOWER_BOUND, self.FOCUS_UPPER_BOUND)
@@ -243,7 +243,7 @@ $$C(f,\phi_{2})=(0.1(f+\phi_{2}))^{2}\cdot \sin(0.01(f+\phi_{2}))$$
 <div align="center">
 <img src="Media/Pasted image 20240124012635.png" width="50%" height="50%" />
 </div>
-I will be initiating the algorithm in current spot marked by the red spot, and run the algorithm. 
+I will be initiating the algorithm in the current spot marked by the red spot, and run the algorithm. 
 <br>
 <div align="center">
 <img src="Media/Pasted image 20240128095804.png" width="50%" height="50%" />
@@ -252,17 +252,17 @@ I will be initiating the algorithm in current spot marked by the red spot, and r
 The algorithm is successfully able to arrive at the absolute minimum point. 
 
 ###### ADAM vs Momentum Gradient Descent 
-The plots for Adam are as following:
+The plots for Adam are as follows:
 <br>
 <div align="center">
 <img src="Media/love.svg" width="50%" height="50%" />
 </div>
 We can see in the `count vs iteration` plot that although we observe oscillation it flattens out until the algorithm fixes on a constant value.
 
-While the plots for momentum gradient descent are as following:
+While the plots for momentum gradient descent are as follows:
 <br>
 <div align="center">
 <img src="Media/jo.svg" width="50%" height="50%" />
 </div>
 
-Additionally, while tuning the parameters I noticed that Adam tends to avoid getting stuck in the saddle point unlike momentum gradient descent which gets stuck on it despite a previous lower count solution.
+Additionally, while tuning the parameters I noticed that Adam tends to avoid getting stuck in the saddle point, unlike momentum gradient descent which gets stuck on it despite a previous lower count solution.
